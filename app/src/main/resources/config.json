@@ -1,7 +1,7 @@
 {
   "Table": {
     "colour": "green",
-    "friction": 0.8,
+    "friction": 1.0,
     "size": {
       "x": 600,
       "y": 300
