@@ -16,8 +16,11 @@ import pool.table.TableFactory;
 public class ConfigReader {
 
     /**
-     *
+     * Reads in the JSON config file and creates many pool factory and ball factories
+     * to instantiate the pool objects. It finally returns the pool table object where
+     * the game is played
      * @param path The path of the json file to read
+     * @return Table
      */
     public Table parse(String path) {
 
@@ -41,8 +44,8 @@ public class ConfigReader {
             for (Object obj : jsonBallsBall) {
                 JSONObject jsonBall = (JSONObject) obj;
 
+                // create and add each ball to the table.
                 PoolObject newBall = bFac.createPoolObj(jsonBall);
-
                 newTable.addBall((Ball) newBall);
 
                 System.out.println(((Ball) newBall).getPosition());

@@ -1,18 +1,32 @@
 package pool.ball;
 
+import javafx.scene.paint.Color;
 import pool.Builder;
 import javafx.geometry.Point2D;
 
+import java.util.HashMap;
+
 public class BallBuilder implements Builder {
     private String colour;
+    private Color paintColour;
     private Point2D position;
     private Point2D velocity;
     private double mass;
     private int life;
+    private HashMap<String, Color> paintMap;
+
+    public BallBuilder() {
+        this.paintMap = new HashMap<>();
+
+        paintMap.put("red", Color.RED);
+        paintMap.put("blue", Color.BLUE);
+        paintMap.put("white", Color.WHITE);
+    }
 
     @Override
     public void setColour(String colour) {
         this.colour = colour;
+        this.paintColour = paintMap.get(colour);
     }
 
     @Override
@@ -36,6 +50,6 @@ public class BallBuilder implements Builder {
     }
 
     public Ball getResult() {
-        return new Ball(colour, position, velocity, mass, life);
+        return new Ball(colour, paintColour, position, velocity, mass, life);
     }
 }

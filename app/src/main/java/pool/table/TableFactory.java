@@ -5,6 +5,13 @@ import pool.PoolFactory;
 import pool.PoolObject;
 
 public class TableFactory implements PoolFactory {
+    /**
+     * The creator for pool table.
+     *
+     * Reads in a JSONObject file and creates a Pool table object based on the JSON file.
+     * @param configJson
+     * @return Table as PoolObj
+     */
     @Override
     public PoolObject createPoolObj(JSONObject configJson) {
         // reading the Table section:

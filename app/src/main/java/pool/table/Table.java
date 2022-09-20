@@ -14,8 +14,8 @@ public class Table implements PoolObject {
     private Long y;
     private double friction;
     private double frictionCoeff;
-
     private List<Ball> balls;
+    private Ball cueBall;
     private long tickCount;
 
     public Table(String colour, Long x, Long y, double friction) {
@@ -23,7 +23,7 @@ public class Table implements PoolObject {
         this.x = x;
         this.y = y;
         this.friction = friction;
-        this.frictionCoeff = 1 - friction/2;
+        this.frictionCoeff = 1 - friction/100;
         this.balls = new ArrayList<Ball>();
     }
 
@@ -71,21 +71,60 @@ public class Table implements PoolObject {
         return balls;
     }
 
+    // set the cueBall to the field if undefined, and returns the cueBall
+    public Ball getCueBall() {
+        if (this.cueBall != null) {
+            return this.cueBall;
+        }
+
+        for (Ball aBall: this.getBalls()) {
+            if (aBall.getColour().equals("white")) {
+                this.cueBall = aBall;
+            }
+        }
+
+        return this.cueBall;
+    }
+
     public void setBalls(List<Ball> balls) {
         this.balls = balls;
     }
 
+    // checks that a ball is not out of the bounds of the table when adding, if so, move to the closes valid point.
     public void addBall(Ball aBall) {
+        tableCollision(aBall);
+
         this.balls.add(aBall);
     }
 
+    // checks if all the balls on the table have stopped moving
+    public boolean isTableAtRest() {
+        boolean tableAtRest = true;
+
+        for (Ball aBall: this.getBalls()) {
+            if (aBall.getVelocity().magnitude() != 0) {
+                // tln(aBall.getVelocity().magnitude());
+                tableAtRest = false;
+            }
+        }
+
+        return tableAtRest;
+    }
+
+    /**
+     * Checks if two balls have made contact with each other. Includes a check making sure balls can't collide with
+     * themselves
+     * @param ballA
+     * @param ballB
+     * @return whether balls collided
+     */
     private boolean checkCollision(Ball ballA, Ball ballB) {
         if (ballA == ballB) {
             return false;
         }
 
         return Math.abs(ballA.getPosition().getX() - ballB.getPosition().getX()) < ballA.getRadius() + ballB.getRadius()
-                && Math.abs(ballA.getPosition().getX() - ballB.getPosition().getX()) < ballA.getRadius() + ballB.getRadius();
+                && Math.abs(ballA.getPosition().getY() - ballB.getPosition().getY()) < ballA.getRadius() + ballB.getRadius();
     }
 
     /**
@@ -143,6 +182,9 @@ public class Table implements PoolObject {
         return new Pair<>(velAPrime, velBPrime);
     }
 
+    /**
+     * Increments the mechanics of the game. Applies velocity to positions, apply friction, and apply any collisions.
+     */
     public void tick() {
         tickCount++;
 
@@ -151,33 +193,7 @@ public class Table implements PoolObject {
             aBall.tick(this.frictionCoeff);
 
             //check collision with walls
-            if (aBall.getPosition().getX() + aBall.getRadius() > this.getX()) {
-                aBall.setPosition(aBall.getPosition().getX() - aBall.getRadius(),
-                        aBall.getPosition().getY());
-                aBall.setVelocity(-1 * aBall.getVelocity().getX(),
-                        aBall.getVelocity().getY());
-            }
-
-            if (aBall.getPosition().getX() - aBall.getRadius() < 0) {
-                aBall.setPosition(0 + aBall.getRadius(),
-                        aBall.getPosition().getY());
-                aBall.setVelocity(-1 * aBall.getVelocity().getX(),
-                        aBall.getVelocity().getY());
-            }
-
-            if (aBall.getPosition().getY() + aBall.getRadius() > this.getY()) {
-                aBall.setPosition(aBall.getPosition().getX(),
-                        this.getY() - aBall.getRadius());
-                aBall.setVelocity(aBall.getVelocity().getX(),
-                        -1 * aBall.getVelocity().getY());
-            }
-
-            if (aBall.getPosition().getY() - aBall.getRadius() < 0) {
-                aBall.setPosition(aBall.getPosition().getX(),
-                        0 + aBall.getRadius());
-                aBall.setVelocity(aBall.getVelocity().getX(),
-                        -1 * aBall.getVelocity().getY());
-            }
+            tableCollision(aBall);
 
             for (Ball anotherBall: this.balls) {
                 if (checkCollision(aBall, anotherBall)) {
@@ -187,6 +203,42 @@ public class Table implements PoolObject {
                     anotherBall.setVelocity(newV.getValue());
                 }
             }
+        }
+    }
+
+    /**
+     * Checks if a ball collides with the edges of the table, if so, move it to the closest valid point and
+     * apply velocity change.
+     * @param aBall
+     */
+    private void tableCollision(Ball aBall) {
+        if (aBall.getPosition().getX() + aBall.getRadius() > this.getX()) {
+            aBall.setPosition(this.getX() - aBall.getRadius(),
+                    aBall.getPosition().getY());
+            aBall.setVelocity(-1 * aBall.getVelocity().getX(),
+                    aBall.getVelocity().getY());
+        }
+
+        if (aBall.getPosition().getX() - aBall.getRadius() < 0) {
+            aBall.setPosition(0 + aBall.getRadius(),
+                    aBall.getPosition().getY());
+            aBall.setVelocity(-1 * aBall.getVelocity().getX(),
+                    aBall.getVelocity().getY());
+        }
+
+        if (aBall.getPosition().getY() + aBall.getRadius() > this.getY()) {
+            aBall.setPosition(aBall.getPosition().getX(),
+                    this.getY() - aBall.getRadius());
+            aBall.setVelocity(aBall.getVelocity().getX(),
+                    -1 * aBall.getVelocity().getY());
+        }
+
+        if (aBall.getPosition().getY() - aBall.getRadius() < 0) {
+            aBall.setPosition(aBall.getPosition().getX(),
+                    0 + aBall.getRadius());
+            aBall.setVelocity(aBall.getVelocity().getX(),
+                    -1 * aBall.getVelocity().getY());
+            // 0 + aBall.getRadius()
         }
     }
 }

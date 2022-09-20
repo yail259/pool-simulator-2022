@@ -6,6 +6,14 @@ import pool.PoolFactory;
 import pool.PoolObject;
 
 public class BallFactory implements PoolFactory {
+    /**
+     * Acts as a director and uses a BallBuilder object to create different types
+     * of balls and return them.
+     *
+     * Implements PoolFactory interface as it creates PoolObjects.
+     * @param jsonBall
+     * @return Ball as PoolObject
+     */
     @Override
     public PoolObject createPoolObj(JSONObject jsonBall) {
         BallBuilder aBuilder = new BallBuilder();

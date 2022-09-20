@@ -9,15 +9,17 @@ public class App extends Application{
     @Override
     public void start(Stage primaryStage) {
         ConfigReader cr = new ConfigReader();
-
+        // ensure the correct project directory is used
         String projDir = System.getProperty("user.dir");
         projDir = projDir.replace("\\", "/");
         System.out.println(projDir);
 
+        // creates new table from JSON config
         Table newTable = cr.parse(projDir + "/src/main/resources/config.json");
 
         GameManager game = new GameManager(newTable);
 
+        // show game, enjoy!
         primaryStage.setTitle("Pool is cool");
         primaryStage.setScene(game.getGameScene());
         primaryStage.show();
@@ -29,3 +31,5 @@ public class App extends Application{
         launch(args);
     }
 }
+
+
