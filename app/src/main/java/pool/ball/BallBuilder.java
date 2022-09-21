@@ -3,6 +3,10 @@ package pool.ball;
 import javafx.scene.paint.Color;
 import pool.Builder;
 import javafx.geometry.Point2D;
+import pool.HoleStrategy;
+import pool.hole.RedBallHoleStrategy;
+import pool.hole.BlueBallHoleStrategy;
+import pool.hole.WhiteBallHoleStrategy;
 
 import java.util.HashMap;
 
@@ -12,7 +16,7 @@ public class BallBuilder implements Builder {
     private Point2D position;
     private Point2D velocity;
     private double mass;
-    private int life;
+    private HoleStrategy thisBallHoleStrat;
     private HashMap<String, Color> paintMap;
 
     public BallBuilder() {
@@ -27,6 +31,14 @@ public class BallBuilder implements Builder {
     public void setColour(String colour) {
         this.colour = colour;
         this.paintColour = paintMap.get(colour);
+
+        if (colour.equals("red")) {
+            setHoleStrat(new RedBallHoleStrategy());
+        } else if (colour.equals("blue")) {
+            setHoleStrat(new BlueBallHoleStrategy());
+        } else if (colour.equals("white")) {
+            setHoleStrat(new WhiteBallHoleStrategy());
+        }
     }
 
     @Override
@@ -43,13 +55,12 @@ public class BallBuilder implements Builder {
     public void setMass(double mass) {
         this.mass = mass;
     }
-
     @Override
-    public void setLife(int life) {
-        this.life = life;
+    public void setHoleStrat(HoleStrategy thisBallHoleStrat) {
+        this.thisBallHoleStrat = thisBallHoleStrat;
     }
 
     public Ball getResult() {
-        return new Ball(colour, paintColour, position, velocity, mass, life);
+        return new Ball(colour, paintColour, position, velocity, mass, thisBallHoleStrat);
     }
 }

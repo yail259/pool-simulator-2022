@@ -38,8 +38,8 @@ public class Table implements PoolObject {
         this.holes.add(new Hole(0, this.y));
         this.holes.add(new Hole(this.x, this.y));
         this.holes.add(new Hole(this.x, 0));
-        this.holes.add(new Hole(this.x/2, 0));
-        this.holes.add(new Hole(this.x/2, this.y));
+        this.holes.add(new Hole(this.x/2, 0 - Hole.radius/4));
+        this.holes.add(new Hole(this.x/2, this.y + Hole.radius/4));
     }
 
     public String getColour() {
@@ -201,6 +201,11 @@ public class Table implements PoolObject {
         return new Pair<>(velAPrime, velBPrime);
     }
 
+    public boolean checkInHole(Ball ball, Hole hole) {
+        return Math.abs(ball.getPosition().getX() - hole.getPosition().getX()) < hole.getRadius()
+                && Math.abs(ball.getPosition().getY() - hole.getPosition().getY()) < hole.getRadius();
+    }
+
     /**
      * Increments the mechanics of the game. Applies velocity to positions, apply friction, and apply any collisions.
      */
@@ -220,6 +225,12 @@ public class Table implements PoolObject {
 
                     aBall.setVelocity(newV.getKey());
                     anotherBall.setVelocity(newV.getValue());
+                }
+            }
+
+            for (Hole aHole: this.getHoles()) {
+                if (checkInHole(aBall, aHole)) {
+                    aBall.enterHole(this);
                 }
             }
         }

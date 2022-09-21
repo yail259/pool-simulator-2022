@@ -1,5 +1,6 @@
 package pool;
 import javafx.geometry.Point2D;
+import pool.hole.Hole;
 
 public interface Builder {
     void setColour(String colour);
@@ -9,6 +10,5 @@ public interface Builder {
     void setVelocity(Point2D velocity);
 
     void setMass(double mass);
-
-    void setLife(int life);
+    void setHoleStrat(HoleStrategy thisBallHoleStrat);
 }
