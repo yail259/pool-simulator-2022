@@ -15,11 +15,13 @@ public class BlueBallHoleStrategy implements HoleStrategy {
     public void enterHole(Ball thisBall, Table gameTable) {
         if (this.life == 2) {
             thisBall.setPosition(thisBall.getInitialPosition());
+            thisBall.setVelocity(0, 0);
 
             this.life--;
             return;
         }
 
-        gameTable.getBalls().remove(thisBall);
+        gameTable.addBallsInHole(thisBall);
+
     }
 }

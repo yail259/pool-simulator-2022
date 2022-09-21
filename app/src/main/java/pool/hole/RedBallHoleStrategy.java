@@ -8,6 +8,6 @@ import pool.table.Table;
 public class RedBallHoleStrategy implements HoleStrategy {
     @Override
     public void enterHole(Ball thisBall, Table gameTable) {
-        gameTable.getBalls().remove(thisBall);
+        gameTable.addBallsInHole(thisBall);
     }
 }

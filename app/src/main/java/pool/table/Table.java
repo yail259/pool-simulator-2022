@@ -1,6 +1,7 @@
 package pool.table;
 
 import javafx.geometry.Point2D;
+import pool.App;
 import pool.PoolObject;
 import pool.ball.Ball;
 
@@ -16,6 +17,7 @@ public class Table implements PoolObject {
     private double friction;
     private double frictionCoeff;
     private List<Ball> balls;
+    private List<Ball> ballsInHole;
     private List<Hole> holes;
     private Ball cueBall;
     private long tickCount;
@@ -27,6 +29,7 @@ public class Table implements PoolObject {
         this.friction = friction;
         this.frictionCoeff = 1 - friction/100;
         this.balls = new ArrayList<Ball>();
+        this.ballsInHole = new ArrayList<Ball>();
 
         constructHoles();
     }
@@ -219,6 +222,7 @@ public class Table implements PoolObject {
             //check collision with walls
             tableCollision(aBall);
 
+            // checks collision with other balls
             for (Ball anotherBall: this.balls) {
                 if (checkCollision(aBall, anotherBall)) {
                     Pair<Point2D, Point2D> newV = calculateCollision(aBall, anotherBall);
@@ -228,12 +232,19 @@ public class Table implements PoolObject {
                 }
             }
 
+            // check if any ball has entered a hole and implement correct strategy
             for (Hole aHole: this.getHoles()) {
                 if (checkInHole(aBall, aHole)) {
                     aBall.enterHole(this);
                 }
             }
         }
+
+        this.balls.removeAll(this.ballsInHole);
+    }
+
+    public void addBallsInHole(Ball newBallInHole) {
+        this.ballsInHole.add(newBallInHole);
     }
 
     /**
@@ -271,4 +282,8 @@ public class Table implements PoolObject {
             // 0 + aBall.getRadius()
         }
     }
+
+//    private void reset() {
+//        this = App.readResourcesTable();
+//    }
 }

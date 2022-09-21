@@ -20,7 +20,7 @@ public class App extends Application{
         game.run();
     }
 
-    private static Table readResourcesTable() {
+    public static Table readResourcesTable() {
         ConfigReader cr = new ConfigReader();
         // ensure the correct project directory is used
         String projDir = System.getProperty("user.dir");
