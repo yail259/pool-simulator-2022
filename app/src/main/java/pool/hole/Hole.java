@@ -7,7 +7,7 @@ public class Hole {
     private Point2D position;
 
     private final Color paintColour = Color.BLACK;
-    private final double radius = 7.5;
+    private final double radius = 10.5;
 
     public Hole(double x, double y) {
         this.position = new Point2D(x, y);
