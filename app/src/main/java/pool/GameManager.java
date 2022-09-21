@@ -15,6 +15,7 @@ import javafx.util.Duration;
 import javafx.scene.input.MouseEvent;
 import javafx.event.*;
 
+import pool.hole.Hole;
 import pool.table.Table;
 import pool.ball.Ball;
 
@@ -143,6 +144,15 @@ public class GameManager {
                     aBall.getPosition().getY() - aBall.getRadius(),
                     aBall.getRadius() * 2,
                     aBall.getRadius() * 2);
+        }
+        
+        // draw the holes of the table
+        for (Hole aHole: gameTable.getHoles()) {
+            gc.setFill(aHole.getPaintColour());
+            gc.fillOval(aHole.getPosition().getX() - aHole.getRadius(),
+                    aHole.getPosition().getY() - aHole.getRadius(),
+                    aHole.getRadius() * 2,
+                    aHole.getRadius() * 2);
         }
     }
 }

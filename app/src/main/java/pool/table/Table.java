@@ -7,6 +7,7 @@ import pool.ball.Ball;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.util.Pair;
+import pool.hole.Hole;
 
 public class Table implements PoolObject {
     private String colour;
@@ -15,6 +16,7 @@ public class Table implements PoolObject {
     private double friction;
     private double frictionCoeff;
     private List<Ball> balls;
+    private List<Hole> holes;
     private Ball cueBall;
     private long tickCount;
 
@@ -25,6 +27,19 @@ public class Table implements PoolObject {
         this.friction = friction;
         this.frictionCoeff = 1 - friction/100;
         this.balls = new ArrayList<Ball>();
+
+        constructHoles();
+    }
+
+    private void constructHoles() {
+        this.holes = new ArrayList<Hole>();
+
+        this.holes.add(new Hole(0, 0));
+        this.holes.add(new Hole(0, this.y));
+        this.holes.add(new Hole(this.x, this.y));
+        this.holes.add(new Hole(this.x, 0));
+        this.holes.add(new Hole(this.x/2, 0));
+        this.holes.add(new Hole(this.x/2, this.y));
     }
 
     public String getColour() {
@@ -69,6 +84,10 @@ public class Table implements PoolObject {
 
     public List<Ball> getBalls() {
         return balls;
+    }
+
+    public List<Hole> getHoles() {
+        return holes;
     }
 
     // set the cueBall to the field if undefined, and returns the cueBall

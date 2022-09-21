@@ -8,14 +8,7 @@ import pool.table.Table;
 public class App extends Application{
     @Override
     public void start(Stage primaryStage) {
-        ConfigReader cr = new ConfigReader();
-        // ensure the correct project directory is used
-        String projDir = System.getProperty("user.dir");
-        projDir = projDir.replace("\\", "/");
-        System.out.println(projDir);
-
-        // creates new table from JSON config
-        Table newTable = cr.parse(projDir + "/src/main/resources/config.json");
+        Table newTable = readResourcesTable();
 
         GameManager game = new GameManager(newTable);
 
@@ -25,6 +18,18 @@ public class App extends Application{
         primaryStage.show();
 
         game.run();
+    }
+
+    private static Table readResourcesTable() {
+        ConfigReader cr = new ConfigReader();
+        // ensure the correct project directory is used
+        String projDir = System.getProperty("user.dir");
+        projDir = projDir.replace("\\", "/");
+        System.out.println(projDir);
+
+        // creates new table from JSON config
+        Table newTable = cr.parse(projDir + "/src/main/resources/config.json");
+        return newTable;
     }
 
     public static void main(String[] args) {
