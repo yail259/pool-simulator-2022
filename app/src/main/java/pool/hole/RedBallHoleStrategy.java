@@ -10,4 +10,9 @@ public class RedBallHoleStrategy implements HoleStrategy {
     public void enterHole(Ball thisBall, Table gameTable) {
         gameTable.addBallsInHole(thisBall);
     }
+
+    @Override
+    public void reset() {
+
+    }
 }

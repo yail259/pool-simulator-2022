@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 import javafx.scene.input.MouseEvent;
 import javafx.event.*;
@@ -34,7 +35,6 @@ public class GameManager {
         Pane aPane = new Pane();
         this.gamePane = aPane;
         this.gameScene = new Scene(aPane, gameTable.getX(), gameTable.getY());
-        gameScene.setFill(Color.GREEN);
 
         Canvas gameCanvas = new Canvas(gameTable.getX(), gameTable.getY());
         this.gc = gameCanvas.getGraphicsContext2D();
@@ -122,11 +122,29 @@ public class GameManager {
     }
 
     private void draw() {
+
+        // if the game is won, show the win screen and stop running the game.
+        if (gameTable.isHasWon()) {
+            gc.setFill(gameTable.getPaintColour().invert());
+            gc.fillRect(0, 0, gameTable.getX(), gameTable.getY());
+
+            gc.setFill(gameTable.getPaintColour());
+            gc.setFont(Font.font("Consolas", 50));
+            gc.fillText("YOU WIN!!!", gameTable.getX() / 2, gameTable.getY() / 2);
+            return;
+        }
+
         // increments the game at 60fps and clears the table to redraw
         gameTable.tick();
         // circle is a separate node that accepts input, this is draw as well as the canvas oval
         updateCueNode();
-        gc.clearRect(0, 0, gameTable.getX(), gameTable.getY());
+
+        gc.setFill(gameTable.getPaintColour());
+        gc.fillRect(0, 0, gameTable.getX(), gameTable.getY());
+
+        gc.setFill(gameTable.getPaintColour().invert());
+        gc.setFont(Font.font("Consolas", 20));
+        gc.fillText(gameTable.getTickCountSeconds() + "S", gameTable.getX() / 2, gameTable.getY() / 2);
 
         boolean tableAtRest = this.gameTable.isTableAtRest();
 
@@ -137,15 +155,6 @@ public class GameManager {
             gamePane.setDisable(true);
         }
 
-        // draw the updated coordinates of the balls as ovals on the canvas
-        for (Ball aBall: gameTable.getBalls()) {
-            gc.setFill(aBall.getPaintColour());
-            gc.fillOval(aBall.getPosition().getX() - aBall.getRadius(),
-                    aBall.getPosition().getY() - aBall.getRadius(),
-                    aBall.getRadius() * 2,
-                    aBall.getRadius() * 2);
-        }
-        
         // draw the holes of the table
         for (Hole aHole: gameTable.getHoles()) {
             gc.setFill(aHole.getPaintColour());
@@ -153,6 +162,15 @@ public class GameManager {
                     aHole.getPosition().getY() - aHole.getRadius(),
                     aHole.getRadius() * 2,
                     aHole.getRadius() * 2);
+        }
+
+        // draw the updated coordinates of the balls as ovals on the canvas
+        for (Ball aBall: gameTable.getBalls()) {
+            gc.setFill(aBall.getPaintColour());
+            gc.fillOval(aBall.getPosition().getX() - aBall.getRadius(),
+                    aBall.getPosition().getY() - aBall.getRadius(),
+                    aBall.getRadius() * 2,
+                    aBall.getRadius() * 2);
         }
     }
 }

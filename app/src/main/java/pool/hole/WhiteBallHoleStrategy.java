@@ -7,6 +7,10 @@ import pool.table.Table;
 public class WhiteBallHoleStrategy implements HoleStrategy {
     @Override
     public void enterHole(Ball thisBall, Table gameTable) {
+        gameTable.setReset(true);
+    }
 
+    @Override
+    public void reset() {
     }
 }

@@ -1,10 +1,24 @@
 package pool.table;
 
+import javafx.scene.paint.Color;
 import org.json.simple.JSONObject;
 import pool.PoolFactory;
 import pool.PoolObject;
 
+import java.util.HashMap;
+
 public class TableFactory implements PoolFactory {
+    private HashMap<String, Color> paintMap;
+
+    public TableFactory() {
+        this.paintMap = new HashMap<>();
+
+        paintMap.put("red", Color.INDIANRED);
+        paintMap.put("blue", Color.AQUAMARINE);
+        paintMap.put("white", Color.BEIGE);
+        paintMap.put("green", Color.GREEN);
+    }
+
     /**
      * The creator for pool table.
      *
@@ -19,6 +33,7 @@ public class TableFactory implements PoolFactory {
 
         // reading a value from the table section
         String tableColour = (String) jsonTable.get("colour");
+        Color paintColour = paintMap.get(tableColour);
 
         // reading a coordinate from the nested section within the table
         // note that the table x and y are of type Long (i.e. they are integers)
@@ -29,6 +44,6 @@ public class TableFactory implements PoolFactory {
         // This is a double which should affect the rate at which the balls slow down
         Double tableFriction = (Double) jsonTable.get("friction");
 
-        return new Table(tableColour, tableX, tableY, tableFriction);
+        return new Table(tableColour, paintColour, tableX, tableY, tableFriction);
     }
 }

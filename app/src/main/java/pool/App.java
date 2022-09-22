@@ -28,7 +28,7 @@ public class App extends Application{
         System.out.println(projDir);
 
         // creates new table from JSON config
-        Table newTable = cr.parse(projDir + "/src/main/resources/config.json");
+        Table newTable = cr.parse(projDir + "/src/main/resources/config1.json");
         return newTable;
     }
 

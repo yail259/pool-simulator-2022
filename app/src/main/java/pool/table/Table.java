@@ -1,6 +1,7 @@
 package pool.table;
 
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import pool.App;
 import pool.PoolObject;
 import pool.ball.Ball;
@@ -11,19 +12,25 @@ import javafx.util.Pair;
 import pool.hole.Hole;
 
 public class Table implements PoolObject {
+    private Color paintColour;
     private String colour;
     private Long x;
     private Long y;
     private double friction;
     private double frictionCoeff;
+    // includes cue ball and all other balls
     private List<Ball> balls;
     private List<Ball> ballsInHole;
     private List<Hole> holes;
     private Ball cueBall;
     private long tickCount;
+    private boolean reset = false;
+    private boolean hasWon = false;
 
-    public Table(String colour, Long x, Long y, double friction) {
+    public Table(String colour, Color paintColour, Long x, Long y, double friction) {
         this.colour = colour;
+        this.paintColour = paintColour;
+
         this.x = x;
         this.y = y;
         this.friction = friction;
@@ -45,8 +52,16 @@ public class Table implements PoolObject {
         this.holes.add(new Hole(this.x/2, this.y + Hole.radius/4));
     }
 
+    public boolean isHasWon() {
+        return hasWon;
+    }
+
     public String getColour() {
         return colour;
+    }
+
+    public Color getPaintColour() {
+        return paintColour;
     }
 
     public void setColour(String colour) {
@@ -157,12 +172,8 @@ public class Table implements PoolObject {
      * http://www.gamasutra.com/view/feature/3015/pool_hall_lessons_fast_accurate_.php?page=3
      * which has been converted into Java/JavaFX
      *
-     * @param positionA The coordinates of the centre of ball A
-     * @param velocityA The delta x,y vector of ball A (how much it moves per tick)
-     * @param massA The mass of ball A (for the moment this should always be the same as ball B)
-     * @param positionB The coordinates of the centre of ball B
-     * @param velocityB The delta x,y vector of ball B (how much it moves per tick)
-     * @param massB The mass of ball B (for the moment this should always be the same as ball A)
+     * @param ballA
+     * @param ballB
      *
      * @return A Pair<Point2D, Point2D> in which the first (key) Point2D is the new delta x,y vector for ball A, and the second (value) Point2D is the new delta x,y vector for ball B.
      */
@@ -209,11 +220,20 @@ public class Table implements PoolObject {
                 && Math.abs(ball.getPosition().getY() - hole.getPosition().getY()) < hole.getRadius();
     }
 
+    public long getTickCountSeconds() {
+        return tickCount / 60;
+    }
+
     /**
      * Increments the mechanics of the game. Applies velocity to positions, apply friction, and apply any collisions.
      */
     public void tick() {
         tickCount++;
+
+        // if only the cue ball is remaining, then the game is won
+        if (this.balls.size() == 1) {
+            hasWon = true;
+        }
 
         for (Ball aBall: this.balls) {
             // calculate and set new position by adding position and velocity
@@ -239,8 +259,14 @@ public class Table implements PoolObject {
                 }
             }
         }
-
+        // remove all the balls added to the in hole list
         this.balls.removeAll(this.ballsInHole);
+
+        // if white ball is in hole, and reset is set to true by white ball strategy, reset game table
+        if (this.reset) {
+            this.reset();
+            this.setReset(false);
+        }
     }
 
     public void addBallsInHole(Ball newBallInHole) {
@@ -279,11 +305,21 @@ public class Table implements PoolObject {
                     0 + aBall.getRadius());
             aBall.setVelocity(aBall.getVelocity().getX(),
                     -1 * aBall.getVelocity().getY());
-            // 0 + aBall.getRadius()
         }
     }
 
-//    private void reset() {
-//        this = App.readResourcesTable();
-//    }
+    public void setReset(boolean isOn) {
+        this.reset = isOn;
+    }
+
+    public void reset() {
+        System.out.println("Resetting");
+        balls.addAll(ballsInHole);
+        ballsInHole.clear();
+        this.tickCount = 0;
+
+        for (Ball aBall: this.balls) {
+            aBall.reset();
+        }
+    }
 }

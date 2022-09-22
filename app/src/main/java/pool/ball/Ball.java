@@ -13,6 +13,8 @@ public class Ball implements PoolObject {
     private Point2D position;
     private Point2D initialPosition;
     private Point2D velocity;
+    private Point2D initialVelocity;
+
     private double mass;
     private HoleStrategy thisBallHoleStrat;
     private final double radius = 5.0;
@@ -25,8 +27,10 @@ public class Ball implements PoolObject {
         this.position = position;
         this.velocity = velocity;
 
-        this.mass = mass;
         this.initialPosition = position;
+        this.initialVelocity = velocity;
+
+        this.mass = mass;
 
         this.thisBallHoleStrat = thisBallHoleStrat;
     }
@@ -72,6 +76,10 @@ public class Ball implements PoolObject {
         this.velocity = velocity;
     }
 
+    public Point2D getInitialVelocity() {
+        return initialVelocity;
+    }
+
     public void setVelocity(double x, double y) {
         this.setVelocity(new Point2D(x, y));
     }
@@ -101,5 +109,11 @@ public class Ball implements PoolObject {
     // strategy method for different behaviour when entering the hole
     public void enterHole(Table table) {
         this.thisBallHoleStrat.enterHole(this, table);
+    }
+
+    public void reset() {
+        this.setPosition(initialPosition);
+        this.setVelocity(initialVelocity);
+        this.thisBallHoleStrat.reset();
     }
 }
