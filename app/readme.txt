@@ -9,7 +9,8 @@ concrete objects Table and Ball respectively.
 Builder is the interface of the Builder pattern for BallBuilder and contains all the methods necessary to build
 a ball or a ball related object.
 BallFactory acts as the director for the BallBuilder and builds all the part of the ball according to the JSON file.
-The BallBuilder is a concrete implementation of the builder and allows the parts of the ball to be built one by one.
+The BlueBallBuilder, RedBallBuilder, WhiteBallBuilder are concrete implementations of the builder and
+allows the parts of the ball to be built one by one.
 
 Hole strategy is the interface of the strategy pattern, it contains the enterHole and reset behaviour for the balls.
 WhiteBallHoleStrategy, BlueBallHoleStrategy, RedBallHoleStrategy are concrete implementations of the interface and

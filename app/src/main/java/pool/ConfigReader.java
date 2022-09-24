@@ -29,7 +29,7 @@ public class ConfigReader {
             Object object = parser.parse(new FileReader(path));
             JSONObject jsonObject = (JSONObject) object;
 
-            TableFactory tFac = new TableFactory();
+            PoolFactory tFac = new TableFactory();
             Table newTable = (Table) tFac.createPoolObj(jsonObject);
 
             // reading the "Balls" section:
@@ -38,7 +38,7 @@ public class ConfigReader {
             // reading the "Balls: ball" array:
             JSONArray jsonBallsBall = (JSONArray) jsonBalls.get("ball");
 
-            BallFactory bFac = new BallFactory();
+            PoolFactory bFac = new BallFactory();
 
             // reading from the array:
             for (Object obj : jsonBallsBall) {
@@ -48,7 +48,7 @@ public class ConfigReader {
                 PoolObject newBall = bFac.createPoolObj(jsonBall);
                 newTable.addBall((Ball) newBall);
 
-                System.out.println(((Ball) newBall).getPosition());
+//                System.out.println(((Ball) newBall).getPosition());
             }
 
             return newTable;
