@@ -23,6 +23,7 @@ import pool.ball.Ball;
 public class GameManager {
     // determines how sensitive the stick input is
     public static final double INPUT_SENSITIVITY = 0.1;
+    public static final int HIT_CUE_LIMIT = 100;
     private final GraphicsContext gc;
     private Table gameTable;
     private Scene gameScene;
@@ -79,8 +80,15 @@ public class GameManager {
                 stick.setStartX(circle.getCenterX());
                 stick.setStartY(circle.getCenterY());
 
-                stick.setEndX(e.getX());
-                stick.setEndY(e.getY());
+                Point2D stickLength = new Point2D(circle.getCenterX() - e.getX(), circle.getCenterY() - e.getY());
+
+                if (stickLength.magnitude() > HIT_CUE_LIMIT) {
+                    stickLength = stickLength.normalize().multiply(HIT_CUE_LIMIT);
+
+                }
+
+                stick.setEndX(circle.getCenterX() + stickLength.getX());
+                stick.setEndY(circle.getCenterY() + stickLength.getY());
 
                 circle.setFill(Color.DARKSLATEBLUE);
             }
@@ -96,6 +104,14 @@ public class GameManager {
                 stick.setVisible(false);
 
                 Point2D newHitVel = new Point2D(circle.getCenterX() - e.getX(), circle.getCenterY() - e.getY());
+
+                // limit the power of cue hit
+                if (newHitVel.magnitude() > HIT_CUE_LIMIT) {
+//                    System.out.println("limiting");
+                    newHitVel = newHitVel.normalize().multiply(HIT_CUE_LIMIT);
+                }
+
+                // adjust the velocity change
                 newHitVel = newHitVel.multiply(INPUT_SENSITIVITY);
 
                 // apply new moment to ball

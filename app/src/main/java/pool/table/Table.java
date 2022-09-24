@@ -313,7 +313,7 @@ public class Table implements PoolObject {
     }
 
     public void reset() {
-        System.out.println("Resetting");
+//        System.out.println("Resetting");
         balls.addAll(ballsInHole);
         ballsInHole.clear();
         this.tickCount = 0;
