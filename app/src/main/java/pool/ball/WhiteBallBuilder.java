@@ -4,8 +4,9 @@ import javafx.scene.paint.Color;
 import pool.Builder;
 import javafx.geometry.Point2D;
 import pool.HoleStrategy;
+import pool.hole.WhiteBallHoleStrategy;
 
-public class BallBuilder implements Builder {
+public class WhiteBallBuilder implements Builder {
     private String colour;
     private Color paintColour;
     private Point2D position;
@@ -16,6 +17,8 @@ public class BallBuilder implements Builder {
     @Override
     public void setColour(String colour) {
         this.colour = colour;
+        this.paintColour = Color.WHITE;
+        this.thisBallHoleStrat = new WhiteBallHoleStrategy();
     }
 
     @Override
@@ -37,11 +40,8 @@ public class BallBuilder implements Builder {
     public void setMass(double mass) {
         this.mass = mass;
     }
-    @Override
-    public void setHoleStrat(HoleStrategy thisBallHoleStrat) {
-        this.thisBallHoleStrat = thisBallHoleStrat;
-    }
 
+    @Override
     public Ball getResult() {
         return new Ball(colour, paintColour, position, velocity, mass, thisBallHoleStrat);
     }

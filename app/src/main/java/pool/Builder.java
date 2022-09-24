@@ -11,5 +11,5 @@ public interface Builder {
     void setVelocity(Point2D velocity);
 
     void setMass(double mass);
-    void setHoleStrat(HoleStrategy thisBallHoleStrat);
+    PoolObject getResult();
 }
